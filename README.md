@@ -43,7 +43,66 @@ This is easily achieved by downloading
 
 ## Installing
 
+To install the latest version of our firmware you have to download it from the [releases](https://github.com/TwinDimensionIOT/twinpython/releases) from our circuitpython port repository. Then, make sure you have python and esptool installed (you can verify this by running python --version and pip show esptool in the windows console). Open the console on the folder where you downloaded the firmware and run the following command.
+
+* python -m esptool --chip esp32s3 --port YOUR_COM_PORT write_flash -z 0 THE FIRMWARE_BINARY_NAME
+
+For example:
+
+* python -m esptool --chip esp32s3 --port COM4 write_flash -z 0 twindimension_ep_esp32_s3_n8r2_824.bin
+
+Once it finishes, you are done installing the firmware.
+
 ## Usage Example
+
+The EP motherboard has 9 general purpose pins that will be used by the different members of the EP family, one pin dedicated to measure the input voltage, one RS-485 interface, a USB interface, wifi connectivity and BLE connectivity. 
+
+Some examples are showed below
+
+```python
+#example to blink the on-board led
+
+import board
+import digitalio
+import time
+
+time_interval = 0.5
+
+led = digitalio.DigitalInOut(board.IO41)
+led.direction = digitalio.Direction.OUTPUT
+
+def test_blink():
+    while True:
+        led.value = True
+        time.sleep(time_interval)
+        led.value = False
+        time.sleep(time_interval)
+
+test_blink()
+```
+
+```python
+#example to measure the input voltage in the upmost connector
+
+import time
+import board
+from analogio import AnalogIn
+
+time_interval = 0.5
+
+analog_in = AnalogIn(board.IO12)
+
+def get_voltage(pin):
+    return (pin.value * 3.3) / 65536
+
+def test_voltage_measure():
+    while True:
+        print(get_voltage(analog_in))
+        time.sleep(time_interval)
+
+test_voltage_measure()
+
+```
 
 ## Documentation
 
